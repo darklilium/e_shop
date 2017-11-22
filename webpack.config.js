@@ -2,6 +2,10 @@ const path = require('path');
 const webpack = require('webpack');
 const WebpackBuildNotifier = require('webpack-build-notifier');
 const isProduction = process.env.NODE_ENV === 'production';
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+
+//const PurifyCSSPlugin = require('purifycss-webpack');
 
 module.exports = {
   devtool: isProduction ? 'hidden-source-map' : 'inline-source-map',
@@ -9,8 +13,8 @@ module.exports = {
     main: './static/js/apps/main.jsx'
   },
   output: {
-    path: path.join(__dirname, 'static', 'js'),
-    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'js/[name].bundle.js',
     publicPath: "/"
   },
   module: {
@@ -34,6 +38,16 @@ module.exports = {
     modules: ['node_modules'/* add additional folders right here */]
   },
   plugins: [
-    new WebpackBuildNotifier()
+    new WebpackBuildNotifier(),
+    new HtmlWebpackPlugin({
+      title: "Eve ShoppingCart",
+      template: './templates/index.hbs',
+      filename: 'index.html',
+      minify: {
+        collapseWhitespace: true
+      },
+      hash: true
+    }),
+    new webpack.HotModuleReplacementPlugin()
   ]
 };
